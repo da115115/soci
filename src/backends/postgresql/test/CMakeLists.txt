@@ -1,1 +1,0 @@
-soci_backend_test(PostgreSQL)
