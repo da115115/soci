@@ -5,9 +5,17 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "soci.h"
-#include "soci-postgresql.h"
-#include "common-tests.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci.h>
+#       include <soci/test/common-tests.h>
+#       include <soci/backends/postgresql/soci-postgresql.h>
+#else
+#	include <soci.h>
+#	include <common-tests.h>
+#	include <soci-postgresql.h>
+#endif
+//
 #include <iostream>
 #include <sstream>
 #include <string>
