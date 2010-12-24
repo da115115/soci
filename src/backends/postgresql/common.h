@@ -8,7 +8,11 @@
 #ifndef SOCI_POSTGRESQL_COMMON_H_INCLUDED
 #define SOCI_POSTGRESQL_COMMON_H_INCLUDED
 
+#ifdef SOCI_HEADERS_NOT_BURIED
 #include "soci-postgresql.h"
+#else
+#include <soci/postgresql/soci-postgresql.h>
+#endif
 #include <limits>
 #include <cstdio>
 #include <cstring>

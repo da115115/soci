@@ -24,7 +24,11 @@
 # define SOCI_MYSQL_DECL
 #endif
 
-#include "soci-backend.h"
+#ifdef SOCI_HEADERS_NOT_BURIED
+#include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #ifdef _WIN32
 #include <winsock.h> // SOCKET
 #endif // _WIN32

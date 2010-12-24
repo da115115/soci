@@ -8,7 +8,11 @@
 #ifndef SOCI_FIREBIRD_COMMON_H_INCLUDED
 #define SOCI_FIREBIRD_COMMON_H_INCLUDED
 
+#ifdef SOCI_HEADERS_NOT_BURIED
 #include "soci-firebird.h"
+#else
+#include <soci/firebird/soci-firebird.h>
+#endif
 #include <cstdlib>
 #include <ctime>
 #include <limits>

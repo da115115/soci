@@ -22,6 +22,9 @@ project(SOCI)
 set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
+# do not use buried headers
+add_definitions(-DSOCI_HEADERS_NOT_BURIED=1)
+
 include(SociUtilities)
 
 message(STATUS "")

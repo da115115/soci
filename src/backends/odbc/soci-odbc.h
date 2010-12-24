@@ -23,8 +23,13 @@
 # define SOCI_ODBC_DECL
 #endif
 
+#ifdef SOCI_HEADERS_NOT_BURIED
+ #include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
+
 #include <vector>
-#include <soci-backend.h>
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 #endif

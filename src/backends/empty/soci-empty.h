@@ -23,8 +23,11 @@
 # define SOCI_EMPTY_DECL
 #endif
 
-#include "soci-backend.h"
-
+#ifdef SOCI_HEADERS_NOT_BURIED
+#include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #include <cstddef>
 #include <string>
 

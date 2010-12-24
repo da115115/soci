@@ -23,7 +23,11 @@
 # define SOCI_ORACLE_DECL
 #endif
 
+#ifdef SOCI_HEADERS_NOT_BURIED
 #include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #include <oci.h> // OCI
 #include <vector>
 

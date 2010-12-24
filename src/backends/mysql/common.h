@@ -8,7 +8,11 @@
 #ifndef SOCI_MYSQL_COMMON_H_INCLUDED
 #define SOCI_MYSQL_COMMON_H_INCLUDED
 
+#ifdef SOCI_HEADERS_NOT_BURIED
 #include "soci-mysql.h"
+#else
+#include <soci/mysql/soci-mysql.h>
+#endif
 // std
 #include <cstddef>
 #include <ctime>

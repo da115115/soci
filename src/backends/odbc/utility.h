@@ -8,7 +8,11 @@
 #ifndef SOCI_UTILITY_H_INCLUDED
 #define SOCI_UTILITY_H_INCLUDED
 
-#include "soci-backend.h"
+#ifdef SOCI_HEADERS_NOT_BURIED
+#include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #include <sstream>
 
 namespace soci

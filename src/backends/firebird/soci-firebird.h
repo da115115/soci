@@ -24,7 +24,11 @@
 # define SOCI_FIREBIRD_DECL
 #endif
 
+#ifdef SOCI_HEADERS_NOT_BURIED
 #include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #include <ibase.h> // FireBird
 #include <cstdlib>
 #include <vector>

@@ -23,8 +23,12 @@
 # define SOCI_SQLITE3_DECL
 #endif
 
+#ifdef SOCI_HEADERS_NOT_BURIED
+#include <soci-backend.h>
+#else
+#include <soci/soci-backend.h>
+#endif
 #include <vector>
-#include "soci-backend.h"
 
 // Disable flood of nonsense warnings generated for SQLite
 #ifdef _MSC_VER
