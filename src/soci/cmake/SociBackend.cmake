@@ -97,6 +97,10 @@ macro(soci_backend NAME)
       set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
 		"${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
 
+      # TODO: find a better way to have SOCI follow the "buried headers" policy
+      list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
+      add_definitions(-DSOCI_HEADERS_BURIED=1)
+
       # Backend-specific preprocessor definitions
       add_definitions(${THIS_BACKEND_DEPENDS_DEFS})
 
@@ -108,7 +112,7 @@ macro(soci_backend NAME)
       set(THIS_BACKEND_HEADERS_VAR SOCI_${NAMEU}_HEADERS)
       set(${THIS_BACKEND_HEADERS_VAR} ${THIS_BACKEND_HEADERS}) 
 
-	  # Group source files for IDE source explorers (e.g. Visual Studio)
+      # Group source files for IDE source explorers (e.g. Visual Studio)
       source_group("Header Files" FILES ${THIS_BACKEND_HEADERS})
 	  source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
       source_group("CMake Files" FILES CMakeLists.txt)
@@ -260,6 +264,7 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
+#   include_directories(${SOCI_SOURCE_DIR})
     include_directories(${SOCI_SOURCE_DIR}/core/test)
     include_directories(${SOCI_SOURCE_DIR}/backends/${BACKENDL})
 
