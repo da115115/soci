@@ -8,7 +8,15 @@
 #ifndef SOCI_MYSQL_COMMON_H_INCLUDED
 #define SOCI_MYSQL_COMMON_H_INCLUDED
 
-#include "soci-mysql.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci-platform.h>
+#       include <soci/backends/mysql/soci-mysql.h>
+#else
+#	include <soci-platform.h>
+#	include <soci-mysql.h>
+#endif
+//
 // std
 #include <cstddef>
 #include <ctime>
