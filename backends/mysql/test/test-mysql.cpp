@@ -6,9 +6,17 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include "soci.h"
-#include "soci-mysql.h"
-#include "test/common-tests.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci.h>
+#       include <soci/backends/mysql/soci-mysql.h>
+#       include <soci/core/test/common-tests.h>
+#else
+#	include <soci.h>
+#	include <soci-mysql.h>
+#	include <test/common-tests.h>
+#endif
+//
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -18,8 +26,15 @@
 #include <ctime>
 #include <ciso646>
 #include <cstdlib>
-#include <mysqld_error.h>
-#include <errmsg.h>
+//
+// MySQL Client
+#if defined(SOCI_MYSQL_HEADERS_BURIED)
+#       include <mysql/mysqld_error.h>
+#       include <mysql/errmsg.h>
+#else
+#	include <mysqld_error.h>
+#	include <errmsg.h>
+#endif
 
 using namespace soci;
 using namespace soci::tests;

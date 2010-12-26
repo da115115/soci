@@ -6,9 +6,17 @@
 //
 
 #define soci_ORACLE_SOURCE
-#include "soci-oracle.h"
-#include "error.h"
-#include <soci-platform.h>
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci-platform.h>
+#       include <soci/backends/oracle/error.h>
+#       include <soci/backends/oracle/soci-oracle.h>
+#else
+#	include <soci-platform.h>
+#	include <error.h>
+#	include <soci-oracle.h>
+#endif
+//
 #include <cctype>
 #include <cstdio>
 #include <cstring>

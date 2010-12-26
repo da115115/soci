@@ -22,9 +22,13 @@
 #ifndef SOCI_EMPTY_DECL
 # define SOCI_EMPTY_DECL
 #endif
-
-#include "soci-backend.h"
-
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci-backend.h>
+#else
+#	include <soci-backend.h>
+#endif
+//
 #include <cstddef>
 #include <string>
 

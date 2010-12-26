@@ -7,9 +7,14 @@
 
 #ifndef SOCI_ERROR_H_INCLUDED
 #define SOCI_ERROR_H_INCLUDED
-
-#include "soci-config.h"
-// std
+//
+#if defined(SOCI_HEADERS_BURIED)
+#   include <soci/core/soci-config.h>
+#else
+#   include <soci-config.h>
+#endif
+//
+// STL
 #include <stdexcept>
 #include <string>
 
