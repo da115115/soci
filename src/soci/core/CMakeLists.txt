@@ -85,6 +85,9 @@ else()
     CLEAN_DIRECT_OUTPUT 1)
 endif()
 
+# TODO: find a better way to add that include directory
+include_directories(${SOCI_SOURCE_DIR})
+
 #
 # Core static library
 #
