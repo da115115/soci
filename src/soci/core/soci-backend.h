@@ -7,10 +7,16 @@
 
 #ifndef SOCI_BACKEND_H_INCLUDED
 #define SOCI_BACKEND_H_INCLUDED
-
-#include "soci-config.h"
-#include "error.h"
-// std
+//
+#if defined(SOCI_HEADERS_BURIED)
+#   include <soci/core/soci-config.h>
+#   include <soci/core/error.h>
+#else
+#   include <soci-config.h>
+#   include <error.h>
+#endif
+//
+// STL
 #include <cstddef>
 #include <map>
 #include <string>

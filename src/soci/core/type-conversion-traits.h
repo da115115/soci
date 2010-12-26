@@ -7,8 +7,13 @@
 
 #ifndef SOCI_TYPE_CONVERSION_TRAITS_H_INCLUDED
 #define SOCI_TYPE_CONVERSION_TRAITS_H_INCLUDED
-
-#include "soci-backend.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#   include <soci/core/soci-backend.h>
+#else
+#	include <soci-backend.h>
+#endif
+//
 
 namespace soci
 {

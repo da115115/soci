@@ -7,10 +7,16 @@
 
 #ifndef SOCI_EXCHANGE_TRAITS_H_INCLUDED
 #define SOCI_EXCHANGE_TRAITS_H_INCLUDED
-
-#include "type-conversion-traits.h"
-#include "soci-backend.h"
-// std
+//
+#if defined(SOCI_HEADERS_BURIED)
+#   include <soci/core/type-conversion-traits.h>
+#   include <soci/core/soci-backend.h>
+#else
+#	include <type-conversion-traits.h>
+#	include <soci-backend.h>
+#endif
+//
+// STL
 #include <ctime>
 #include <string>
 #include <vector>
