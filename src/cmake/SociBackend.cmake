@@ -264,6 +264,7 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
+	#include_directories(${SOCI_SOURCE_DIR})
     include_directories(${SOCI_SOURCE_DIR}/soci/core/test)
     include_directories(${SOCI_SOURCE_DIR}/soci/backends/${BACKENDL})
 
