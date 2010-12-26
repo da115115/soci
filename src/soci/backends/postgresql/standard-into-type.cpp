@@ -6,18 +6,10 @@
 //
 
 #define SOCI_POSTGRESQL_SOURCE
+#include "soci-postgresql.h"
 #include "common.h"
-//
-#if defined(SOCI_HEADERS_BURIED)
-#       include <soci/core/blob.h>
-#       include <soci/core/rowid.h>
-#       include <soci/backends/postgresql/soci-postgresql.h>
-#else
-#	include <blob.h>
-#	include <rowid.h>
-#	include <soci-postgresql.h>
-#endif
-//
+#include "rowid.h"
+#include "blob.h"
 #include <libpq/libpq-fs.h> // libpq
 #include <cctype>
 #include <cstdio>

@@ -7,19 +7,12 @@
 //
 
 #define SOCI_MYSQL_SOURCE
+#include "soci-mysql.h"
+#include <soci-platform.h>
 #include "common.h"
-//
-#if defined(SOCI_HEADERS_BURIED)
-#       include <soci/core/soci-platform.h>
-#       include <soci/backends/mysql/soci-mysql.h>
-#else
-#	include <soci-platform.h>
-#	include <soci-mysql.h>
-#endif
-//
 // std
-#include <ciso646>
 #include <cassert>
+#include <ciso646>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
