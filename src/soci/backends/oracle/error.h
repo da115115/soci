@@ -7,8 +7,13 @@
 
 #ifndef SOCI_ORACLE_ERROR_H_INCLUDED
 #define SOCI_ORACLE_ERROR_H_INCLUDED
-
-#include "soci-oracle.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#   include <soci/backends/oracle/soci-oracle.h>
+#else
+#   include <soci-oracle.h>
+#endif
+//
 
 namespace soci
 {
