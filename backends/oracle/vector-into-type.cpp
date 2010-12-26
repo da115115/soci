@@ -5,17 +5,16 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define soci_ORACLE_SOURCE
+#define SOCI_ORACLE_SOURCE
+#include "error.h"
 //
 #if defined(SOCI_HEADERS_BURIED)
 #       include <soci/core/statement.h>
 #       include <soci/core/soci-platform.h>
-#       include <soci/backends/oracle/error.h>
 #       include <soci/backends/oracle/soci-oracle.h>
 #else
 #	include <statement.h>
 #	include <soci-platform.h>
-#	include "error.h"
 #	include <soci-oracle.h>
 #endif
 //

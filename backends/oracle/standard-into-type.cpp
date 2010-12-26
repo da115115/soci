@@ -6,20 +6,19 @@
 //
 
 #define SOCI_ORACLE_SOURCE
+#include "error.h"
 //
 #if defined(SOCI_HEADERS_BURIED)
 #       include <soci/core/statement.h>
 #       include <soci/core/blob.h>
 #       include <soci/core/rowid.h>
 #       include <soci/core/soci-platform.h>
-#       include <soci/backends/oracle/error.h>
 #       include <soci/backends/oracle/soci-oracle.h>
 #else
 #	include <statement.h>
 #	include <blob.h>
 #	include <rowid.h>
 #	include <soci-platform.h>
-#	include "error.h"
 #	include <soci-oracle.h>
 #endif
 //
