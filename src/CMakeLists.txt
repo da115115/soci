@@ -37,6 +37,10 @@ soci_version(MAJOR 3 MINOR 1 PATCH 0)
 #################################################################################
 # Build features and variants
 #################################################################################
+
+# TODO: find a better way to set that variable
+add_definitions(-DSOCI_HEADERS_BURIED=1)
+
 include(SociSystemInfo)
 include(SociConfig)
 
