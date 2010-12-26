@@ -98,6 +98,9 @@ macro(soci_backend NAME)
       set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
 		"${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
 
+      # TODO: find a better way to have SOCI follow the "buried headers" policy
+      list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
+
       # Backend-specific preprocessor definitions
       add_definitions(${THIS_BACKEND_DEPENDS_DEFS})
 
@@ -261,7 +264,7 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
-#   include_directories(${SOCI_SOURCE_DIR})
+	#include_directories(${SOCI_SOURCE_DIR})
     include_directories(${SOCI_SOURCE_DIR}/soci/core/test)
     include_directories(${SOCI_SOURCE_DIR}/soci/backends/${BACKENDL})
 
