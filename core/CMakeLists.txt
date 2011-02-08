@@ -15,6 +15,14 @@ message(STATUS "")
 # Core dependencies
 set(SOCI_CORE_DEPENDENCIES)
 
+include(FindThreads)
+
+if(Threads_FOUND OR CMAKE_USE_WIN32_THREADS_INIT OR CMAKE_THREAD_LIBS_INIT)
+  list(APPEND SOCI_CORE_DEPENDENCIES ${CMAKE_THREAD_LIBS_INIT})
+else()
+  message(FATAL_ERROR "No thread library found")
+endif()
+
 if(NOT MSVC)
   set(DL_FIND_QUIETLY TRUE)
   find_package(DL)
@@ -84,6 +92,8 @@ else()
     SOVERSION ${SOCI_SOVERSION}
     CLEAN_DIRECT_OUTPUT 1)
 endif()
+add_definitions(-DSOCI_LIB_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}soci_"
+                -DSOCI_LIB_SUFFIX="${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
 # TODO: find a better way to add that include directory
 include_directories(${SOCI_SOURCE_DIR})
