@@ -6,12 +6,13 @@
 //
 
 #define SOCI_ORACLE_SOURCE
-#include "error.h"
 //
 #if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/error.h>
 #       include <soci/core/soci-backend.h>
 #       include <soci/backends/oracle/soci-oracle.h>
 #else
+#	include <error.h>
 #	include <soci-backend.h>
 #	include <soci-oracle.h>
 #endif
