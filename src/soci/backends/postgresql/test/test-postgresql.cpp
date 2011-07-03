@@ -8,7 +8,7 @@
 //
 #if defined(SOCI_HEADERS_BURIED)
 #       include <soci/core/soci.h>
-#       include <soci/core/test/common-tests.h>
+#       include <soci/test/common-tests.h>
 #       include <soci/backends/postgresql/soci-postgresql.h>
 #else
 #	include <soci.h>

@@ -98,9 +98,6 @@ add_definitions(-DSOCI_LIB_PREFIX="${CMAKE_SHARED_LIBRARY_PREFIX}soci_"
 # TODO: find a better way to add that include directory
 include_directories(${SOCI_SOURCE_DIR})
 
-# TODO: find a better way to add that include directory
-include_directories(${SOCI_SOURCE_DIR})
-
 #
 # Core static library
 #
