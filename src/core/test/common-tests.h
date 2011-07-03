@@ -42,6 +42,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <typeinfo>
 
 // Objects used later in tests 14,15
 struct PhonebookEntry
@@ -172,7 +173,7 @@ namespace soci
 namespace tests
 {
 
-// TODO: improve cleanup capabilities by subtypes, soci_test nam emay be omitted --mloskot
+// TODO: improve cleanup capabilities by subtypes, soci_test name may be omitted --mloskot
 //       i.e. optional ctor param accepting custom table name
 class table_creator_base
 {
@@ -184,7 +185,15 @@ public:
 private:
     void drop()
     {
-        try { msession << "drop table soci_test"; } catch (soci_error&) {}
+        try
+        {
+            msession << "drop table soci_test";
+        }
+        catch (soci_error const& e)
+        {
+            //std::cerr << e.what() << std::endl;
+            e.what();
+        }
     }
     session& msession;
 };
@@ -1358,7 +1367,7 @@ void test7()
 #else
             // Older PostgreSQL does not support use elements.
 
-            sql << "insert into test7(i1, i2, i3) values(5, 6, 7)";
+            sql << "insert into soci_test(i1, i2, i3) values(5, 6, 7)";
 
 #endif // SOCI_PGSQL_NOPARAMS
 

@@ -27,9 +27,9 @@
 #include <limits>
 #include <sstream>
 
-#ifdef SOCI_PGSQL_NOPARAMS
-#define SOCI_PGSQL_NOBINDBYNAME
-#endif // SOCI_PGSQL_NOPARAMS
+#ifdef SOCI_POSTGRESQL_NOPARAMS
+#define SOCI_POSTGRESQL_NOBINDBYNAME
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
 #ifdef _MSC_VER
 #pragma warning(disable:4355 4996)
@@ -120,6 +120,15 @@ void postgresql_standard_use_type_backend::pre_use(indicator const * ind)
                 buf_ = new char[bufSize];
                 snprintf(buf_, bufSize, "%lld",
                     *static_cast<long long *>(data_));
+            }
+            break;
+        case x_unsigned_long_long:
+            {
+                std::size_t const bufSize
+                    = std::numeric_limits<unsigned long long>::digits10 + 2;
+                buf_ = new char[bufSize];
+                snprintf(buf_, bufSize, "%llu",
+                    *static_cast<unsigned long long *>(data_));
             }
             break;
         case x_double:

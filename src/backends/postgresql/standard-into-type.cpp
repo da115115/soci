@@ -26,9 +26,9 @@
 #include <ctime>
 #include <sstream>
 
-#ifdef SOCI_PGSQL_NOPARAMS
-#define SOCI_PGSQL_NOBINDBYNAME
-#endif // SOCI_PGSQL_NOPARAMS
+#ifdef SOCI_POSTGRESQL_NOPARAMS
+#define SOCI_POSTGRESQL_NOBINDBYNAME
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
 using namespace soci;
 using namespace soci::details;
@@ -125,6 +125,12 @@ void postgresql_standard_into_type_backend::post_fetch(
             {
                 long long * dest = static_cast<long long *>(data_);
                 *dest = string_to_integer<long long>(buf);
+            }
+            break;
+        case x_unsigned_long_long:
+            {
+                unsigned long long * dest = static_cast<unsigned long long *>(data_);
+                *dest = string_to_unsigned_integer<unsigned long long>(buf);
             }
             break;
         case x_double:

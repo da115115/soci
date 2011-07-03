@@ -1177,10 +1177,12 @@ int main(int argc, char** argv)
         test14();
 
         std::cout << "\nOK, all tests passed.\n\n";
+
+        return EXIT_SUCCESS;
     }
     catch (std::exception const & e)
     {
         std::cout << e.what() << '\n';
     }
-    return 0;
+    return EXIT_FAILURE;
 }

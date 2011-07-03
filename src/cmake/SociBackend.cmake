@@ -9,9 +9,11 @@
 ################################################################################
 # Macros in this module:
 #   
-#   soci_backend - defines project of a database backend for SOCI library
+#   soci_backend
+#     - defines project of a database backend for SOCI library
 #
-#   soci_backend_test - defines test project of a database backend for SOCI library
+#   soci_backend_test
+#     - defines test project of a database backend for SOCI library
 ################################################################################
 
 # Defines project of a database backend for SOCI library
@@ -98,13 +100,18 @@ macro(soci_backend NAME)
       # Backend-specific preprocessor definitions
       add_definitions(${THIS_BACKEND_DEPENDS_DEFS})
 
-      # Backend  installable headers and sources
+      # Backend installable headers and sources
       if (NOT THIS_BACKEND_HEADERS)
 		file(GLOB THIS_BACKEND_HEADERS *.h)
       endif()
       file(GLOB THIS_BACKEND_SOURCES *.cpp)
       set(THIS_BACKEND_HEADERS_VAR SOCI_${NAMEU}_HEADERS)
       set(${THIS_BACKEND_HEADERS_VAR} ${THIS_BACKEND_HEADERS}) 
+
+	  # Group source files for IDE source explorers (e.g. Visual Studio)
+      source_group("Header Files" FILES ${THIS_BACKEND_HEADERS})
+	  source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
+      source_group("CMake Files" FILES CMakeLists.txt)
 
       # Backend target
       set(THIS_BACKEND_TARGET ${PROJECTNAMEL}_${NAMEL})
@@ -119,7 +126,10 @@ macro(soci_backend NAME)
       # TODO: Extract as macros: soci_shared_lib_target and soci_static_lib_target --mloskot
 
       # Shared library target
-      add_library(${THIS_BACKEND_TARGET} SHARED ${THIS_BACKEND_SOURCES})
+      add_library(${THIS_BACKEND_TARGET}
+          SHARED
+          ${THIS_BACKEND_SOURCES}
+          ${THIS_BACKEND_HEADERS})
 
       target_link_libraries(${THIS_BACKEND_TARGET}
 		${SOCI_CORE_TARGET}
@@ -142,7 +152,10 @@ macro(soci_backend NAME)
         CLEAN_DIRECT_OUTPUT 1)
 
       # Static library target
-      add_library(${THIS_BACKEND_TARGET}-static STATIC ${THIS_BACKEND_SOURCES})
+      add_library(${THIS_BACKEND_TARGET}-static
+          STATIC
+          ${THIS_BACKEND_SOURCES}
+          ${THIS_BACKEND_HEADERS})
 
       set_target_properties(${THIS_BACKEND_TARGET}-static
 		PROPERTIES
@@ -151,7 +164,10 @@ macro(soci_backend NAME)
 		CLEAN_DIRECT_OUTPUT 1)
 
       # Backend installation
-      install(FILES ${THIS_BACKEND_HEADERS} DESTINATION ${INCLUDEDIR}/${PROJECTNAMEL}/${NAMEL})
+      install(FILES ${THIS_BACKEND_HEADERS}
+          DESTINATION
+          ${INCLUDEDIR}/${PROJECTNAMEL}/${NAMEL})
+
       install(TARGETS ${THIS_BACKEND_TARGET} ${THIS_BACKEND_TARGET}-static
 		RUNTIME DESTINATION ${BINDIR}
 		LIBRARY DESTINATION ${LIBDIR}
@@ -187,6 +203,27 @@ macro(soci_backend NAME)
   #message("DEPENDS_INCLUDE_DIRS: ${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
 endmacro()
 
+# Generates .vcxproj.user for target of each test.
+#
+# soci_backend_test_create_vcxproj_user(
+#    PostgreSQLTest
+#    "host=localhost dbname=soci_test user=mloskot")
+#
+function(soci_backend_test_create_vcxproj_user TARGET_NAME TEST_CMD_ARGS)
+  if(MSVC)
+    set(SYSTEM_NAME $ENV{USERDOMAIN})
+    set(USER_NAME $ENV{USERNAME})
+    set(SOCI_TEST_CMD_ARGS ${TEST_CMD_ARGS})
+
+    if(MSVC_VERSION EQUAL 1600)
+      configure_file(
+        ${SOCI_SOURCE_DIR}/cmake/resources/vs2010-test-cmd-args.vcxproj.user.in
+        ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}.vcxproj.user
+        @ONLY)
+    endif()
+  endif()
+endfunction(soci_backend_test_create_vcxproj_user)
+
 # Defines test project of a database backend for SOCI library
 #
 # soci_backend_test(BACKEND mybackend SOURCE mytest1.cpp
@@ -218,8 +255,8 @@ macro(soci_backend_test)
     set(${TEST_CONNSTR_VAR} ""
       CACHE STRING "Connection string for ${BACKENDU} test")
     
-    if(NOT ${TEST_CONNSTR_VAR} AND TEST_CONNSTR)
-      set(${TEST_CONNSTR_VAR} ${TEST_CONNSTR})
+    if(NOT ${TEST_CONNSTR_VAR} AND THIS_TEST_CONNSTR)
+      set(${TEST_CONNSTR_VAR} ${THIS_TEST_CONNSTR})
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
@@ -239,8 +276,10 @@ macro(soci_backend_test)
 
     string(TOLOWER "${TEST_FULL_NAME}" TEST_TARGET)
 
-    add_executable(${TEST_TARGET} ${THIS_TEST_SOURCE})
-    add_executable(${TEST_TARGET}_static ${THIS_TEST_SOURCE})
+	set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/core/test/common-tests.h)
+
+    add_executable(${TEST_TARGET} ${TEST_HEADERS} ${THIS_TEST_SOURCE})
+    add_executable(${TEST_TARGET}_static ${TEST_HEADERS} ${THIS_TEST_SOURCE})
 
     target_link_libraries(${TEST_TARGET}
       ${SOCI_CORE_TARGET}
@@ -262,6 +301,18 @@ macro(soci_backend_test)
     add_test(${TEST_TARGET}_static
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_TARGET}_static
       ${${TEST_CONNSTR_VAR}})
+
+    # Convenient .vcxproj.user making tests ready to run and debug from within IDE
+    soci_backend_test_create_vcxproj_user(${TEST_TARGET} "\"${${TEST_CONNSTR_VAR}}\"")
+    soci_backend_test_create_vcxproj_user(${TEST_TARGET}_static "\"${${TEST_CONNSTR_VAR}}\"")
+
+	# Ask make check to try to build tests first before executing them
+	add_dependencies(check ${TEST_TARGET} ${TEST_TARGET}_static)
+
+    # Group source files for IDE source explorers (e.g. Visual Studio)
+    source_group("Header Files" FILES ${TEST_HEADERS})
+    source_group("Source Files" FILES ${THIS_TEST_SOURCE})
+    source_group("CMake Files" FILES CMakeLists.txt)
 
   endif()
 

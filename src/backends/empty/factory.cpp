@@ -7,6 +7,7 @@
 
 #define SOCI_EMPTY_SOURCE
 #include "soci-empty.h"
+#include <backend-loader.h>
 
 #ifdef _MSC_VER
 #pragma warning(disable:4355)
@@ -31,6 +32,11 @@ extern "C"
 SOCI_EMPTY_DECL backend_factory const* factory_empty()
 {
     return &soci::empty;
+}
+
+SOCI_EMPTY_DECL void register_factory_empty()
+{
+    soci::dynamic_backends::register_backend("empty", soci::empty);
 }
 
 } // extern "C"

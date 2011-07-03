@@ -167,11 +167,12 @@ struct sqlite3_statement_backend : details::statement_backend
     virtual void clean_up();
     virtual void prepare(std::string const &query,
         details::statement_type eType);
-    void resetIfNeeded();
+    void reset_if_needed();
 
     virtual exec_fetch_result execute(int number);
     virtual exec_fetch_result fetch(int number);
 
+    virtual long long get_affected_rows();
     virtual int get_number_of_rows();
 
     virtual std::string rewrite_for_procedure_call(std::string const &query);
@@ -194,9 +195,9 @@ struct sqlite3_statement_backend : details::statement_backend
     bool boundByPos_;
 
 private:
-    exec_fetch_result loadRS(int totalRows);
-    exec_fetch_result loadOne();
-    exec_fetch_result bindAndExecute(int number);
+    exec_fetch_result load_rowset(int totalRows);
+    exec_fetch_result load_one();
+    exec_fetch_result bind_and_execute(int number);
 };
 
 struct sqlite3_rowid_backend : details::rowid_backend
@@ -266,6 +267,7 @@ extern "C"
 
 // for dynamic backend loading
 SOCI_SQLITE3_DECL backend_factory const * factory_sqlite3();
+SOCI_SQLITE3_DECL void register_factory_sqlite3();
 
 } // extern "C"
 

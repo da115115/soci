@@ -64,7 +64,7 @@ void test1()
         int id;
         std::string name;
 
-#ifndef SOCI_PGSQL_NOPARAMS
+#ifndef SOCI_POSTGRESQL_NOPARAMS
 
         sql << "select id, name from soci_test where oid = :rid",
             into(id), into(name), use(rid);
@@ -80,7 +80,7 @@ void test1()
         sql << "select id, name from soci_test where oid = " << oid,
             into(id), into(name);
 
-#endif // SOCI_PGSQL_NOPARAMS
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
         assert(id == 7);
         assert(name == "John");
@@ -102,7 +102,7 @@ public:
         try { sql << "create language plpgsql"; }
         catch (soci_error const &) {} // ignore if error
 
-#ifndef SOCI_PGSQL_NOPARAMS
+#ifndef SOCI_POSTGRESQL_NOPARAMS
 
         sql  <<
             "create or replace function soci_test(msg varchar) "
@@ -139,7 +139,7 @@ void test2()
         std::string in("my message");
         std::string out;
 
-#ifndef SOCI_PGSQL_NOPARAMS
+#ifndef SOCI_POSTGRESQL_NOPARAMS
 
         statement st = (sql.prepare <<
             "select soci_test(:input)",
@@ -153,7 +153,7 @@ void test2()
             "select soci_test(\'" << in << "\')",
             into(out));
 
-#endif // SOCI_PGSQL_NOPARAMS
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
         st.execute(true);
         assert(out == in);
@@ -163,7 +163,7 @@ void test2()
             std::string in("my message2");
             std::string out;
 
-#ifndef SOCI_PGSQL_NOPARAMS
+#ifndef SOCI_POSTGRESQL_NOPARAMS
 
             procedure proc = (sql.prepare <<
                 "soci_test(:input)",
@@ -175,7 +175,7 @@ void test2()
             procedure proc = (sql.prepare <<
                 "soci_test(\'" << in << "\')", into(out));
 
-#endif // SOCI_PGSQL_NOPARAMS
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
             proc.execute(true);
             assert(out == in);
@@ -205,7 +205,7 @@ void test3()
         session sql(backEnd, connectString);
 
         blob_table_creator tableCreator(sql);
-        
+
         char buf[] = "abcdefghijklmnopqrstuvwxyz";
 
         sql << "insert into soci_test(id, img) values(7, lo_creat(-1))";
@@ -297,6 +297,26 @@ void test4()
     }
 
     std::cout << "test 4 passed" << std::endl;
+}
+
+// unsigned long long test
+void test4ul()
+{
+    {
+        session sql(backEnd, connectString);
+
+        longlong_table_creator tableCreator(sql);
+
+        unsigned long long v1 = 1000000000000ULL;
+        assert(v1 / 1000000 == 1000000);
+
+        sql << "insert into soci_test(val) values(:val)", use(v1);
+
+        unsigned long long v2 = 0ULL;
+        sql << "select val from soci_test", into(v2);
+
+        assert(v2 == v1);
+    }
 }
 
 struct boolean_table_creator : table_creator_base
@@ -458,6 +478,45 @@ void test10()
     std::cout << "test 10 passed" << std::endl;
 }
 
+// test for number of affected rows
+
+struct table_creator_for_test11 : table_creator_base
+{
+    table_creator_for_test11(session & sql)
+        : table_creator_base(sql)
+    {
+        sql << "create table soci_test(val integer)";
+    }
+};
+
+void test11()
+{
+    {
+        session sql(backEnd, connectString);
+
+        table_creator_for_test11 tableCreator(sql);
+
+        for (int i = 0; i != 10; i++)
+        {
+            sql << "insert into soci_test(val) values(:val)", use(i);
+        }
+
+        statement st1 = (sql.prepare <<
+            "update soci_test set val = val + 1");
+        st1.execute(false);
+
+        assert(st1.get_affected_rows() == 10);
+
+        statement st2 = (sql.prepare <<
+            "delete from soci_test where val <= 5");
+        st2.execute(false);
+
+        assert(st2.get_affected_rows() == 5);
+    }
+
+    std::cout << "test 11 passed" << std::endl;
+}
+
 // DDL Creation objects for common tests
 struct table_creator_one : public table_creator_base
 {
@@ -498,9 +557,9 @@ struct table_creator_three : public table_creator_base
 class test_context : public test_context_base
 {
 public:
-    test_context(backend_factory const &backEnd,
-                std::string const &connectString)
-        : test_context_base(backEnd, connectString) {}
+    test_context(backend_factory const &backEnd, std::string const &connectString)
+        : test_context_base(backEnd, connectString)
+    {}
 
     table_creator_base* table_creator_1(session& s) const
     {
@@ -521,7 +580,6 @@ public:
     {
         return "timestamptz(\'" + datdt_string + "\')";
     }
-
 };
 
 
@@ -557,11 +615,11 @@ int main(int argc, char** argv)
         tests.run();
 
         std::cout << "\nSOCI Postgres Tests:\n\n";
-
         test1();
         test2();
         test3();
         test4();
+        test4ul();
         test5();
 
 //         test6();
@@ -571,6 +629,7 @@ int main(int argc, char** argv)
         test8();
         test9();
         test10();
+        test11();
 
         std::cout << "\nOK, all tests passed.\n\n";
         return EXIT_SUCCESS;
@@ -578,6 +637,6 @@ int main(int argc, char** argv)
     catch (std::exception const & e)
     {
         std::cout << e.what() << '\n';
-        return EXIT_FAILURE;
     }
+    return EXIT_FAILURE;
 }

@@ -7,6 +7,7 @@
 
 #define SOCI_ODBC_SOURCE
 #include "soci-odbc.h"
+#include <backend-loader.h>
 
 using namespace soci;
 using namespace soci::details;
@@ -28,6 +29,11 @@ extern "C"
 SOCI_ODBC_DECL backend_factory const * factory_odbc()
 {
     return &soci::odbc;
+}
+
+SOCI_ODBC_DECL void register_factory_odbc()
+{
+    soci::dynamic_backends::register_backend("odbc", soci::odbc);
 }
 
 } // extern "C"

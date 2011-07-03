@@ -7,6 +7,7 @@
 
 #define SOCI_POSTGRESQL_SOURCE
 #include "soci-postgresql.h"
+#include "error.h"
 #include <libpq/libpq-fs.h> // libpq
 #include <cctype>
 #include <cstdio>
@@ -14,9 +15,9 @@
 #include <ctime>
 #include <sstream>
 
-#ifdef SOCI_PGSQL_NOPARAMS
+#ifdef SOCI_POSTGRESQL_NOPARAMS
 #define SOCI_PGSQL_NOBINDBYNAME
-#endif // SOCI_PGSQL_NOPARAMS
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
 #ifdef _MSC_VER
 #pragma warning(disable:4355 4996)
@@ -24,6 +25,7 @@
 
 using namespace soci;
 using namespace soci::details;
+using namespace soci::details::postgresql;
 
 postgresql_session_backend::postgresql_session_backend(std::string const& connectString)
     : statementCount_(0)
@@ -66,7 +68,7 @@ void hard_exec(PGconn * conn, char const * query, char const * errMsg)
     ExecStatusType const status = PQresultStatus(result);
     if (PGRES_COMMAND_OK != status)
     {
-        throw soci_error(PQresultErrorMessage(result));
+        throw_postgresql_soci_error(result);
     }
 
     PQclear(result);

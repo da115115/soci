@@ -179,6 +179,7 @@ struct firebird_statement_backend : details::statement_backend
     virtual exec_fetch_result execute(int number);
     virtual exec_fetch_result fetch(int number);
 
+    virtual long long get_affected_rows();
     virtual int get_number_of_rows();
 
     virtual std::string rewrite_for_procedure_call(std::string const &query);
@@ -326,6 +327,7 @@ extern "C"
 
 // for dynamic backend loading
 SOCI_FIREBIRD_DECL backend_factory const * factory_firebird();
+SOCI_FIREBIRD_DECL void register_factory_firebird();
 
 } // extern "C"
 

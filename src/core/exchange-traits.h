@@ -34,7 +34,10 @@ struct exchange_traits
     enum // anonymous
     {
         x_type =
-        exchange_traits<typename type_conversion<T>::base_type>::x_type
+            exchange_traits
+            <
+                typename type_conversion<T>::base_type
+            >::x_type
     };
 };
 
@@ -71,6 +74,13 @@ struct exchange_traits<long long>
 {
     typedef basic_type_tag type_family;
     enum { x_type = x_long_long };
+};
+
+template <>
+struct exchange_traits<unsigned long long>
+{
+    typedef basic_type_tag type_family;
+    enum { x_type = x_unsigned_long_long };
 };
 
 #if defined (__LP64__) || ( __WORDSIZE == 64 )

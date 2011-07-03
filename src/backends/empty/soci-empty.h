@@ -114,6 +114,7 @@ struct SOCI_EMPTY_DECL empty_statement_backend : details::statement_backend
     exec_fetch_result execute(int number);
     exec_fetch_result fetch(int number);
 
+    long long get_affected_rows();
     int get_number_of_rows();
 
     std::string rewrite_for_procedure_call(std::string const& query);
@@ -183,6 +184,7 @@ extern "C"
 
 // for dynamic backend loading
 SOCI_EMPTY_DECL backend_factory const* factory_empty();
+SOCI_EMPTY_DECL void register_factory_empty();
 
 } // extern "C"
 

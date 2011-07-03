@@ -7,16 +7,19 @@
 
 #define SOCI_POSTGRESQL_SOURCE
 #include "soci-postgresql.h"
+#include "error.h"
+#include <soci-platform.h>
 #include <libpq/libpq-fs.h> // libpq
 #include <cctype>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <sstream>
 
-#ifdef SOCI_PGSQL_NOPARAMS
-#define SOCI_PGSQL_NOBINDBYNAME
-#endif // SOCI_PGSQL_NOPARAMS
+#ifdef SOCI_POSTGRESQL_NOPARAMS
+#define SOCI_POSTGRESQL_NOBINDBYNAME
+#endif // SOCI_POSTGRESQL_NOPARAMS
 
 #ifdef _MSC_VER
 #pragma warning(disable:4355)
@@ -24,7 +27,7 @@
 
 using namespace soci;
 using namespace soci::details;
-
+using namespace soci::details::postgresql;
 
 postgresql_statement_backend::postgresql_statement_backend(
     postgresql_session_backend &session)
@@ -51,7 +54,7 @@ void postgresql_statement_backend::clean_up()
 void postgresql_statement_backend::prepare(std::string const & query,
     statement_type stType)
 {
-#ifdef SOCI_PGSQL_NOBINDBYNAME
+#ifdef SOCI_POSTGRESQL_NOBINDBYNAME
     query_ = query;
 #else
     // rewrite the query by transforming all named parameters into
@@ -145,9 +148,9 @@ void postgresql_statement_backend::prepare(std::string const & query,
         query_ += ss.str();
     }
 
-#endif // SOCI_PGSQL_NOBINDBYNAME
+#endif // SOCI_POSTGRESQL_NOBINDBYNAME
 
-#ifndef SOCI_PGSQL_NOPREPARE
+#ifndef SOCI_POSTGRESQL_NOPREPARE
 
     if (stType == st_repeatable_query)
     {
@@ -162,14 +165,14 @@ void postgresql_statement_backend::prepare(std::string const & query,
         ExecStatusType status = PQresultStatus(res);
         if (status != PGRES_COMMAND_OK)
         {
-            throw soci_error(PQresultErrorMessage(res));
+            throw_postgresql_soci_error(res);
         }
         PQclear(res);
     }
 
     stType_ = stType;
 
-#endif // SOCI_PGSQL_NOPREPARE
+#endif // SOCI_POSTGRESQL_NOPREPARE
 }
 
 statement_backend::exec_fetch_result
@@ -200,7 +203,7 @@ postgresql_statement_backend::execute(int number)
         // not supported anyway, so in the effect the 'number' parameter here
         // specifies the size of vectors (into/use), but 'numberOfExecutions'
         // specifies the number of loops that need to be performed.
-        
+
         int numberOfExecutions = 1;
         if (number > 0)
         {
@@ -260,13 +263,13 @@ postgresql_statement_backend::execute(int number)
                     }
                 }
 
-#ifdef SOCI_PGSQL_NOPARAMS
+#ifdef SOCI_POSTGRESQL_NOPARAMS
 
                 throw soci_error("Queries with parameters are not supported.");
 
 #else
 
-#ifdef SOCI_PGSQL_NOPREPARE
+#ifdef SOCI_POSTGRESQL_NOPREPARE
 
                 result_ = PQexecParams(session_.conn_, query_.c_str(),
                     static_cast<int>(paramValues.size()),
@@ -293,22 +296,23 @@ postgresql_statement_backend::execute(int number)
                         NULL, &paramValues[0], NULL, NULL, 0);
                 }
 
-#endif // SOCI_PGSQL_NOPREPARE
+#endif // SOCI_POSTGRESQL_NOPREPARE
 
-#endif // SOCI_PGSQL_NOPARAMS
+#endif // SOCI_POSTGRESQL_NOPARAMS
+
+                if (result_ == NULL)
+                {
+                    throw soci_error("Cannot execute query.");
+                }
 
                 if (numberOfExecutions > 1)
                 {
                     // there are only bulk use elements (no intos)
-                    if (result_ == NULL)
-                    {
-                        throw soci_error("Cannot execute query.");
-                    }
 
                     ExecStatusType status = PQresultStatus(result_);
                     if (status != PGRES_COMMAND_OK)
                     {
-                        throw soci_error(PQresultErrorMessage(result_));
+                        throw_postgresql_soci_error(result_);
                     }
                     PQclear(result_);
                 }
@@ -328,7 +332,7 @@ postgresql_statement_backend::execute(int number)
             // there are no use elements
             // - execute the query without parameter information
 
-#ifdef SOCI_PGSQL_NOPREPARE
+#ifdef SOCI_POSTGRESQL_NOPREPARE
 
             result_ = PQexec(session_.conn_, query_.c_str());
 #else
@@ -345,7 +349,7 @@ postgresql_statement_backend::execute(int number)
                 result_ = PQexec(session_.conn_, query_.c_str());
             }
 
-#endif // SOCI_PGSQL_NOPREPARE
+#endif // SOCI_POSTGRESQL_NOPREPARE
 
             if (result_ == NULL)
             {
@@ -394,7 +398,10 @@ postgresql_statement_backend::execute(int number)
     }
     else
     {
-        throw soci_error(PQresultErrorMessage(result_));
+        throw_postgresql_soci_error(result_);
+
+        // dummy, never reach
+        return ef_no_data;
     }
 }
 
@@ -431,6 +438,21 @@ postgresql_statement_backend::fetch(int number)
             rowsToConsume_ = number;
             return ef_success;
         }
+    }
+}
+
+long long postgresql_statement_backend::get_affected_rows()
+{
+    const char * resultStr = PQcmdTuples(result_);
+    char * end;
+    long long result = strtoll(resultStr, &end, 0);
+    if (end != resultStr)
+    {
+        return result;
+    }
+    else
+    {
+        return -1;
     }
 }
 

@@ -21,7 +21,7 @@ namespace soci
 // data types, as seen by the user
 enum data_type
 {
-    dt_string, dt_date, dt_double, dt_integer, dt_unsigned_long, dt_long_long
+    dt_string, dt_date, dt_double, dt_integer, dt_unsigned_long, dt_long_long, dt_unsigned_long_long
 };
 
 // the enum type for indicator variables
@@ -33,13 +33,19 @@ namespace details
 // data types, as used to describe exchange format
 enum exchange_type
 {
-    x_char, x_stdstring, x_short, x_integer,
-    x_unsigned_long, x_long_long, x_double, x_stdtm, x_statement,
+    x_char, x_stdstring,
+    x_short, x_integer,
+    x_unsigned_long, x_long_long, x_unsigned_long_long,
+    x_double, x_stdtm, x_statement,
     x_rowid, x_blob
 };
 
 // type of statement (used for optimizing statement preparation)
-enum statement_type { st_one_time_query, st_repeatable_query };
+enum statement_type
+{
+    st_one_time_query,
+    st_repeatable_query
+};
 
 // polymorphic into type backend
 
@@ -153,6 +159,7 @@ public:
     virtual exec_fetch_result execute(int number) = 0;
     virtual exec_fetch_result fetch(int number) = 0;
 
+    virtual long long get_affected_rows() = 0;
     virtual int get_number_of_rows() = 0;
 
     virtual std::string rewrite_for_procedure_call(std::string const& query) = 0;
