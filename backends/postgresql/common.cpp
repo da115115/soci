@@ -6,7 +6,13 @@
 //
 
 #include "common.h"
-#include <soci-backend.h>
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci-backend.h>
+#else
+#	include <soci-backend.h>
+#endif
+//
 #include <cstdlib>
 #include <ctime>
 
