@@ -23,12 +23,23 @@
 #ifndef SOCI_MYSQL_DECL
 # define SOCI_MYSQL_DECL
 #endif
-
-#include "soci-backend.h"
+//
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci-backend.h>
+#else
+#	include <soci-backend.h>
+#endif
+//
 #ifdef _WIN32
 #include <winsock.h> // SOCKET
 #endif // _WIN32
-#include <mysql.h> // MySQL Client
+//
+// MySQL Client
+#if defined(SOCI_MYSQL_HEADERS_BURIED)
+#       include <mysql/mysql.h>
+#else
+#	include <mysql.h>
+#endif
 #include <vector>
 
 

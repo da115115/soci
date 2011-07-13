@@ -8,20 +8,36 @@
 #ifndef SOCI_COMMON_TESTS_H_INCLUDED
 #define SOCI_COMMON_TESTS_H_INCLUDED
 
-#include "soci.h"
-#include "soci-config.h"
-
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/soci.h>
+#       include <soci/core/soci-config.h>
+#else
+#	include <soci.h>
+#	include <soci-config.h>
+#endif
+//
 #ifdef HAVE_BOOST
 // explicitly pull conversions for Boost's optional, tuple and fusion:
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/boost-optional.h>
+#       include <soci/core/boost-tuple.h>
+#       include <soci/core/boost-gregorian-date.h>
+#else   // SOCI_HEADERS_BURIED
+#	include <boost-optional.h>
+#	include <boost-tuple.h>
+#	include <boost-gregorian-date.h>
+#endif   // SOCI_HEADERS_BURIED
+//
 #include <boost/version.hpp>
-#include <boost-optional.h>
-#include <boost-tuple.h>
-#include <boost-gregorian-date.h>
 #if defined(BOOST_VERSION) && BOOST_VERSION >= 103500
-#include <boost-fusion.h>
+#if defined(SOCI_HEADERS_BURIED)
+#       include <soci/core/boost-fusion.h>
+#else
+#       include <boost-fusion.h>
+#endif   // SOCI_HEADERS_BURIED
 #endif // BOOST_VERSION
 #endif // HAVE_BOOST
-
+//
 #include <algorithm>
 #include <cmath>
 #include <iostream>
