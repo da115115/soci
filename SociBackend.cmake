@@ -93,6 +93,7 @@ macro(soci_backend NAME)
     if(${THIS_BACKEND_OPTION})
 
       # Backend-specific include directories
+<<<<<<< HEAD
       list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
       list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR}/soci/core)
       set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
@@ -101,6 +102,12 @@ macro(soci_backend NAME)
       # TODO: find a better way to have SOCI follow the "buried headers" policy
       list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
 
+=======
+      list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR}/core)
+      set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
+		"${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
+
+>>>>>>> src_build
       # Backend-specific preprocessor definitions
       add_definitions(${THIS_BACKEND_DEPENDS_DEFS})
 
@@ -112,9 +119,15 @@ macro(soci_backend NAME)
       set(THIS_BACKEND_HEADERS_VAR SOCI_${NAMEU}_HEADERS)
       set(${THIS_BACKEND_HEADERS_VAR} ${THIS_BACKEND_HEADERS}) 
 
+<<<<<<< HEAD
       # Group source files for IDE source explorers (e.g. Visual Studio)
       source_group("Header Files" FILES ${THIS_BACKEND_HEADERS})
       source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
+=======
+	  # Group source files for IDE source explorers (e.g. Visual Studio)
+      source_group("Header Files" FILES ${THIS_BACKEND_HEADERS})
+	  source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
+>>>>>>> src_build
       source_group("CMake Files" FILES CMakeLists.txt)
 
       # Backend target
@@ -245,7 +258,11 @@ macro(soci_backend_test)
   string(TOUPPER "${THIS_TEST_BACKEND}" BACKENDU)
   string(TOLOWER "${THIS_TEST_BACKEND}" BACKENDL)
 
+<<<<<<< HEAD
   if(SOCI_TESTS AND SOCI_${BACKENDU})
+=======
+  if(SOCI_TESTS AND SOCI_${BACKENDU} AND NOT SOCI_${BACKENDU}_DO_NOT_TEST)
+>>>>>>> src_build
 
     # Test name
     if(THIS_TEST_NAME)
@@ -264,9 +281,14 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
+<<<<<<< HEAD
 	#include_directories(${SOCI_SOURCE_DIR})
     include_directories(${SOCI_SOURCE_DIR}/soci/core/test)
     include_directories(${SOCI_SOURCE_DIR}/soci/backends/${BACKENDL})
+=======
+    include_directories(${SOCI_SOURCE_DIR}/core/test)
+    include_directories(${SOCI_SOURCE_DIR}/backends/${BACKENDL})
+>>>>>>> src_build
 
     # TODO: Find more generic way of adding Boost to core and backend tests only.
     #       Ideally, from within Boost.cmake.
@@ -281,7 +303,11 @@ macro(soci_backend_test)
 
     string(TOLOWER "${TEST_FULL_NAME}" TEST_TARGET)
 
+<<<<<<< HEAD
     set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/soci/core/test/common-tests.h)
+=======
+	set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/core/test/common-tests.h)
+>>>>>>> src_build
 
     add_executable(${TEST_TARGET} ${TEST_HEADERS} ${THIS_TEST_SOURCE})
     add_executable(${TEST_TARGET}_static ${TEST_HEADERS} ${THIS_TEST_SOURCE})
@@ -290,14 +316,22 @@ macro(soci_backend_test)
       ${SOCI_CORE_TARGET}
       ${SOCI_${BACKENDU}_TARGET}
       ${${BACKENDU}_LIBRARIES}
+<<<<<<< HEAD
       ${SOCI_TEST_DEPENDENCIES})
+=======
+	  ${SOCI_TEST_DEPENDENCIES})
+>>>>>>> src_build
 
     target_link_libraries(${TEST_TARGET}_static
       ${SOCI_CORE_TARGET}-static
       ${SOCI_${BACKENDU}_TARGET}-static
       ${${BACKENDU}_LIBRARIES}
       ${SOCI_CORE_STATIC_DEPENDENCIES}
+<<<<<<< HEAD
       ${SOCI_TEST_DEPENDENCIES})
+=======
+	  ${SOCI_TEST_DEPENDENCIES})
+>>>>>>> src_build
 
     add_test(${TEST_TARGET}
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_TARGET}
@@ -311,8 +345,13 @@ macro(soci_backend_test)
     soci_backend_test_create_vcxproj_user(${TEST_TARGET} "\"${${TEST_CONNSTR_VAR}}\"")
     soci_backend_test_create_vcxproj_user(${TEST_TARGET}_static "\"${${TEST_CONNSTR_VAR}}\"")
 
+<<<<<<< HEAD
     # Ask make check to try to build tests first before executing them
     add_dependencies(check ${TEST_TARGET} ${TEST_TARGET}_static)
+=======
+	# Ask make check to try to build tests first before executing them
+	add_dependencies(check ${TEST_TARGET} ${TEST_TARGET}_static)
+>>>>>>> src_build
 
     # Group source files for IDE source explorers (e.g. Visual Studio)
     source_group("Header Files" FILES ${TEST_HEADERS})
