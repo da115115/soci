@@ -5,7 +5,7 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#define SOCI_ORACLE_SOURCE
+#define soci_ORACLE_SOURCE
 //
 #if defined(SOCI_HEADERS_BURIED)
 #       include <soci/core/statement.h>
