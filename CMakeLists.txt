@@ -24,6 +24,75 @@ set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 include(SociUtilities)
 
 message(STATUS "")
+colormsg(_HIBLUE_ "Configuring SOCI:")
+
+#################################################################################
+# SOCI version information
+#################################################################################
+include(SociVersion)
+
+soci_version(MAJOR 3 MINOR 1 PATCH 0)
+
+#################################################################################
+# Build features and variants
+#################################################################################
+include(SociSystemInfo)
+include(SociConfig)
+
+boost_report_value(SOCI_PLATFORM_NAME)
+boost_report_value(SOCI_COMPILER_NAME)
+
+option(SOCI_TESTS "Enable build of collection of SOCI tests" ON)
+boost_report_value(SOCI_TESTS)
+
+# Put the libaries and binaries that get built into directories at the
+# top of the build tree rather than in hard-to-find leaf
+# directories. This simplifies manual testing and the use of the build
+# tree rather than installed Boost libraries.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+#################################################################################
+# Find SOCI dependencies
+#################################################################################
+
+set(SOCI_CORE_DEPENDENCIES)
+
+include(SociDependencies)
+
+#message("${SOCI_CORE_DEPENDENCIES}")
+
+#################################################################################
+# Installation
+#################################################################################
+
+if(APPLE OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(SOCI_LIBDIR "lib")
+else()
+  set(SOCI_LIBDIR "lib64")
+endif()
+
+set(BINDIR "bin" CACHE PATH "The directory to install binaries into.")
+set(LIBDIR ${SOCI_LIBDIR} CACHE PATH "The directory to install libraries into.")
+set(DATADIR "share" CACHE PATH "The directory to install data files into.")
+set(INCLUDEDIR "include" CACHE PATH "The directory to install includes into.")
+
+#################################################################################
+# Enable CTest support
+#################################################################################
+include(CTest)
+enable_testing()
+
+# Define "make check" as alias for "make test"
+add_custom_target(check COMMAND ctest)
+
+#################################################################################
+# Build configured components
+#################################################################################
+include(SociBackend)
+
+include_directories(${SOCI_SOURCE_DIR}/core)
 
 #
 add_subdirectory(core)
