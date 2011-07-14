@@ -1,4 +1,3 @@
-#################################################################################
 #
 # This file is part of CMake configuration for SOCI library
 #
@@ -19,7 +18,7 @@ project(SOCI)
 #################################################################################
 
 # Path to additional CMake modules
-set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH ${SOCI_SOURCE_DIR}/cmake/modules ${CMAKE_MODULE_PATH})
 
 include(SociUtilities)
@@ -72,7 +71,7 @@ include(SociDependencies)
 # Installation
 #################################################################################
 
-if(UNIX AND CMAKE_SIZEOF_VOID_P EQUAL 4)
+if(APPLE OR CMAKE_SIZEOF_VOID_P EQUAL 4)
   set(SOCI_LIBDIR "lib")
 else()
   set(SOCI_LIBDIR "lib64")
@@ -86,7 +85,7 @@ set(INCLUDEDIR "include" CACHE PATH "The directory to install includes into.")
 #################################################################################
 # Enable CTest support
 #################################################################################
-#include(CTest)
+include(CTest)
 enable_testing()
 
 # Define "make check" as alias for "make test"
@@ -97,7 +96,8 @@ add_custom_target(check COMMAND ctest)
 #################################################################################
 include(SociBackend)
 
-include_directories(${SOCI_SOURCE_DIR})
 include_directories(${SOCI_SOURCE_DIR}/soci/core)
 
-add_subdirectory(soci)
+#
+add_subdirectory(soci/core)
+add_subdirectory(soci/backends)
