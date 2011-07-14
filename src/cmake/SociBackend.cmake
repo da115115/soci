@@ -93,7 +93,6 @@ macro(soci_backend NAME)
     if(${THIS_BACKEND_OPTION})
 
       # Backend-specific include directories
-      list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
       list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR}/soci/core)
       set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
 		"${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
@@ -109,9 +108,9 @@ macro(soci_backend NAME)
       set(THIS_BACKEND_HEADERS_VAR SOCI_${NAMEU}_HEADERS)
       set(${THIS_BACKEND_HEADERS_VAR} ${THIS_BACKEND_HEADERS}) 
 
-      # Group source files for IDE source explorers (e.g. Visual Studio)
+	  # Group source files for IDE source explorers (e.g. Visual Studio)
       source_group("Header Files" FILES ${THIS_BACKEND_HEADERS})
-      source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
+	  source_group("Source Files" FILES ${THIS_BACKEND_SOURCES})
       source_group("CMake Files" FILES CMakeLists.txt)
 
       # Backend target
@@ -261,8 +260,8 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
-    include_directories(${SOCI_SOURCE_DIR}/core/test)
-    include_directories(${SOCI_SOURCE_DIR}/backends/${BACKENDL})
+    include_directories(${SOCI_SOURCE_DIR}/soci/core/test)
+    include_directories(${SOCI_SOURCE_DIR}/soci/backends/${BACKENDL})
 
     # TODO: Find more generic way of adding Boost to core and backend tests only.
     #       Ideally, from within Boost.cmake.
@@ -277,7 +276,7 @@ macro(soci_backend_test)
 
     string(TOLOWER "${TEST_FULL_NAME}" TEST_TARGET)
 
-	set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/core/test/common-tests.h)
+	set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/soci/core/test/common-tests.h)
 
     add_executable(${TEST_TARGET} ${TEST_HEADERS} ${THIS_TEST_SOURCE})
     add_executable(${TEST_TARGET}_static ${TEST_HEADERS} ${THIS_TEST_SOURCE})
