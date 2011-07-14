@@ -15,12 +15,21 @@ You should see the following files and directories here:
 - LICENSE_1_0.txt - Full text of the Boost license.
 - CHANGES         - The description of changes.
 
-That branch corresponds to the 'src' sub-directory of the Git repository.
+- contrib         - Acknowledgements for contributions.
 
-Reminder: Git repository of SOCI project
-----------------------------------------
-/src - project source code tree
-/doc - project documentation
-/www - project website
-/build - legacy build configurations (to be removed)
+- doc/            - Documentation.
 
+- build/          - Additional build scripts and configuration files
+                    for various compilation systems.
+
+- src/            - The source code of the library.
+
+- src/core/       - The main part of the SOCI library.
+
+- src/backends/   - Directory containing implementations and tests for
+                    all available backends.
+
+
+Please see the doc/structure.html file for compilation instructions.
+
+---
