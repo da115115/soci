@@ -98,9 +98,6 @@ macro(soci_backend NAME)
       set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES
 		"${THIS_BACKEND_DEPENDS_INCLUDE_DIRS}")
 
-      # TODO: find a better way to have SOCI follow the "buried headers" policy
-      list(APPEND THIS_BACKEND_DEPENDS_INCLUDE_DIRS ${SOCI_SOURCE_DIR})
-
       # Backend-specific preprocessor definitions
       add_definitions(${THIS_BACKEND_DEPENDS_DEFS})
 
@@ -245,7 +242,7 @@ macro(soci_backend_test)
   string(TOUPPER "${THIS_TEST_BACKEND}" BACKENDU)
   string(TOLOWER "${THIS_TEST_BACKEND}" BACKENDL)
 
-  if(SOCI_TESTS AND SOCI_${BACKENDU})
+  if(SOCI_TESTS AND SOCI_${BACKENDU} AND NOT SOCI_${BACKENDU}_DO_NOT_TEST)
 
     # Test name
     if(THIS_TEST_NAME)
@@ -264,9 +261,8 @@ macro(soci_backend_test)
     endif()
     boost_report_value(${TEST_CONNSTR_VAR})
 
-	#include_directories(${SOCI_SOURCE_DIR})
-    include_directories(${SOCI_SOURCE_DIR}/soci/core/test)
-    include_directories(${SOCI_SOURCE_DIR}/soci/backends/${BACKENDL})
+    include_directories(${SOCI_SOURCE_DIR}/core/test)
+    include_directories(${SOCI_SOURCE_DIR}/backends/${BACKENDL})
 
     # TODO: Find more generic way of adding Boost to core and backend tests only.
     #       Ideally, from within Boost.cmake.
@@ -281,7 +277,7 @@ macro(soci_backend_test)
 
     string(TOLOWER "${TEST_FULL_NAME}" TEST_TARGET)
 
-    set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/soci/core/test/common-tests.h)
+	set(TEST_HEADERS ${PROJECT_SOURCE_DIR}/core/test/common-tests.h)
 
     add_executable(${TEST_TARGET} ${TEST_HEADERS} ${THIS_TEST_SOURCE})
     add_executable(${TEST_TARGET}_static ${TEST_HEADERS} ${THIS_TEST_SOURCE})
@@ -290,14 +286,14 @@ macro(soci_backend_test)
       ${SOCI_CORE_TARGET}
       ${SOCI_${BACKENDU}_TARGET}
       ${${BACKENDU}_LIBRARIES}
-      ${SOCI_TEST_DEPENDENCIES})
+	  ${SOCI_TEST_DEPENDENCIES})
 
     target_link_libraries(${TEST_TARGET}_static
       ${SOCI_CORE_TARGET}-static
       ${SOCI_${BACKENDU}_TARGET}-static
       ${${BACKENDU}_LIBRARIES}
       ${SOCI_CORE_STATIC_DEPENDENCIES}
-      ${SOCI_TEST_DEPENDENCIES})
+	  ${SOCI_TEST_DEPENDENCIES})
 
     add_test(${TEST_TARGET}
       ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${TEST_TARGET}
@@ -311,8 +307,8 @@ macro(soci_backend_test)
     soci_backend_test_create_vcxproj_user(${TEST_TARGET} "\"${${TEST_CONNSTR_VAR}}\"")
     soci_backend_test_create_vcxproj_user(${TEST_TARGET}_static "\"${${TEST_CONNSTR_VAR}}\"")
 
-    # Ask make check to try to build tests first before executing them
-    add_dependencies(check ${TEST_TARGET} ${TEST_TARGET}_static)
+	# Ask make check to try to build tests first before executing them
+	add_dependencies(check ${TEST_TARGET} ${TEST_TARGET}_static)
 
     # Group source files for IDE source explorers (e.g. Visual Studio)
     source_group("Header Files" FILES ${TEST_HEADERS})
