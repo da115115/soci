@@ -5,17 +5,9 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 
-//
-#if defined(SOCI_HEADERS_BURIED)
-#       include <soci/core/soci.h>
-#       include <soci/core/test/common-tests.h>
-#       include <soci/backends/oracle/soci-oracle.h>
-#else
-#	include <soci.h>
-#	include <common-tests.h>
-#	include <soci-oracle.h>
-#endif
-//
+#include "soci.h"
+#include "soci-oracle.h"
+#include "common-tests.h"
 #include <iostream>
 #include <string>
 #include <cstring>
